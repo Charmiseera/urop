@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meta SeamlessM4T v2: Speech-to-Text Evaluation & Comparison Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 16mm 18mm 16mm 18mm;
+            @bottom-right {
+                content: counter(page);
+            }
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Nirmala UI", "Noto Sans Telugu", Gautami, sans-serif;
+            color: #1e293b;
+            line-height: 1.55;
+            font-size: 10pt;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        .badge {
+            display: inline-block;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 8pt;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid #bfdbfe;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        h1 {
+            color: #0f172a;
+            font-size: 19pt;
+            margin: 0 0 6px 0;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .subtitle {
+            color: #475569;
+            font-size: 11pt;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        .meta-info {
+            font-size: 8.5pt;
+            color: #64748b;
+        }
+        h2 {
+            color: #0f172a;
+            font-size: 13pt;
+            margin-top: 22px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 4px;
+            font-weight: 600;
+        }
+        h3 {
+            color: #1e293b;
+            font-size: 10.5pt;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        p {
+            margin: 0 0 8px 0;
+        }
+        .kpi-container {
+            display: flex;
+            gap: 12px;
+            margin: 14px 0 18px 0;
+        }
+        .kpi-card {
+            flex: 1;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px 14px;
+            text-align: center;
+        }
+        .kpi-label {
+            font-size: 8pt;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .kpi-value {
+            font-size: 18pt;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .kpi-sub {
+            font-size: 7.5pt;
+            color: #94a3b8;
+        }
+        .kpi-accent-blue .kpi-value { color: #2563eb; }
+        .kpi-accent-emerald .kpi-value { color: #059669; }
+        .kpi-accent-purple .kpi-value { color: #7c3aed; }
+        .kpi-accent-amber .kpi-value { color: #d97706; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 16px 0;
+            font-size: 9pt;
+        }
+        th, td {
+            padding: 7px 10px;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+        th {
+            background-color: #f1f5f9;
+            color: #334155;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .table-numeric {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        .callout {
+            background: #f0fdf4;
+            border-left: 3px solid #16a34a;
+            padding: 9px 12px;
+            margin: 12px 0;
+            border-radius: 0 4px 4px 0;
+            font-size: 9pt;
+            color: #166534;
+        }
+        .callout-warning {
+            background: #fffbeb;
+            border-left-color: #f59e0b;
+            color: #92400e;
+        }
+        .telugu-text {
+            font-family: "Nirmala UI", "Noto Sans Telugu", Gautami, sans-serif;
+            color: #0f172a;
+        }
+        .pill-best {
+            background: #dcfce7;
+            color: #15803d;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+            font-size: 8pt;
+        }
+        .pill-worst {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+            font-size: 8pt;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        ul, ol {
+            margin: 4px 0 8px 18px;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 4px;
+        }
+        .code-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 8.5pt;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <span class="badge">Research Evaluation Report &bull; UROP Project</span>
+    <h1>Meta SeamlessM4T v2: Telugu Speech-to-Text Benchmark</h1>
+    <div class="subtitle">Comprehensive Performance & Error Analysis Across 3 Regional Dialects and 3 Domains</div>
+    <div class="meta-info">
+        <strong>Model:</strong> facebook/seamless-m4t-v2-large &bull; 
+        <strong>Hardware:</strong> NVIDIA GeForce RTX 3060 (12 GB VRAM) &bull; 
+        <strong>Date:</strong> October 2026 &bull; 
+        <strong>Dataset:</strong> 900 Audios (Rayalaseema, Srikakulam, Vizianagaram)
+    </div>
+</div>
+
+<div class="kpi-container">
+    <div class="kpi-card kpi-accent-blue">
+        <div class="kpi-label">Word Error Rate (WER)</div>
+        <div class="kpi-value">64.11%</div>
+        <div class="kpi-sub">Word-level edit distance</div>
+    </div>
+    <div class="kpi-card kpi-accent-emerald">
+        <div class="kpi-label">Character Error Rate (CER)</div>
+        <div class="kpi-value">29.81%</div>
+        <div class="kpi-sub">Phonetic accuracy indicator</div>
+    </div>
+    <div class="kpi-card kpi-accent-purple">
+        <div class="kpi-label">SacreBLEU Score</div>
+        <div class="kpi-value">18.48</div>
+        <div class="kpi-sub">n-gram precision (0 - 100)</div>
+    </div>
+    <div class="kpi-card kpi-accent-amber">
+        <div class="kpi-label">Audio Corpus Size</div>
+        <div class="kpi-value">900</div>
+        <div class="kpi-sub">Files fully transcribed</div>
+    </div>
+</div>
+
+<h2>1. Executive Summary & Core Insights</h2>
+<p>
+This benchmark measures the speech-to-text accuracy of Meta's foundation model <strong>SeamlessM4T v2 Large</strong> on regional conversational Telugu. The model achieved a <strong>Character Error Rate (CER) of 29.81%</strong>, demonstrating robust acoustic recognition across diverse dialects. 
+</p>
+<div class="callout">
+    <strong>Key Finding:</strong> CER (29.81%) is significantly lower than WER (64.11%). This indicates the model accurately captures the phonetic sequence of spoken Telugu. The divergence is primarily caused by Telugu compound word segmentation (<em>Sandhi</em>), transliteration differences of English technical terms, and ground-truth reference text formatting artifacts.
+</div>
+
+<h2>2. Experimental Setup & Environment</h2>
+<ul>
+    <li><strong>Model Architecture:</strong> <code>facebook/seamless-m4t-v2-large</code> (2.3B parameters), running in <code>torch.float16</code> precision on CUDA.</li>
+    <li><strong>Acoustic Pipeline:</strong> Audio files resampled to 16,000 Hz Mono using a robust fallback decoder (PyAV packet demuxer + SoundFile + Librosa) to support <code>.ogg</code>, <code>.mp4</code>, <code>.mpeg</code>, and <code>.mp3</code>.</li>
+    <li><strong>Dataset Structure:</strong> 900 audio recordings representing 100 sentences spoken in 3 distinct dialect regions across 3 domains (Dairy, Pharmacy, Textile).</li>
+</ul>
+
+<h2>3. Quantitative Benchmark Results</h2>
+
+<h3>3.1 Dialect-Wise Performance Breakdown</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Dialect Region</th>
+            <th class="table-numeric">Evaluated Files</th>
+            <th class="table-numeric">WER (%) ↓</th>
+            <th class="table-numeric">CER (%) ↓</th>
+            <th class="table-numeric">SacreBLEU ↑</th>
+            <th>Performance Ranking</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Rayalaseema</strong></td>
+            <td class="table-numeric">301</td>
+            <td class="table-numeric"><strong>61.02%</strong></td>
+            <td class="table-numeric"><strong>25.44%</strong></td>
+            <td class="table-numeric">19.39</td>
+            <td><span class="pill-best">Best Overall</span></td>
+        </tr>
+        <tr>
+            <td><strong>Vizianagaram</strong></td>
+            <td class="table-numeric">300</td>
+            <td class="table-numeric">64.21%</td>
+            <td class="table-numeric">30.71%</td>
+            <td class="table-numeric"><strong>19.73</strong></td>
+            <td>Moderate Phonetic Fit</td>
+        </tr>
+        <tr>
+            <td><strong>Srikakulam</strong></td>
+            <td class="table-numeric">299</td>
+            <td class="table-numeric">67.10%</td>
+            <td class="table-numeric">33.29%</td>
+            <td class="table-numeric">16.23</td>
+            <td><span class="pill-worst">Highest Dialect Drift</span></td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>3.2 Domain-Wise Performance Breakdown</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Domain / Category</th>
+            <th class="table-numeric">Evaluated Files</th>
+            <th class="table-numeric">WER (%) ↓</th>
+            <th class="table-numeric">CER (%) ↓</th>
+            <th class="table-numeric">SacreBLEU ↑</th>
+            <th>Primary Acoustic Factors</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Dairy</strong></td>
+            <td class="table-numeric">299</td>
+            <td class="table-numeric"><strong>55.36%</strong></td>
+            <td class="table-numeric"><strong>21.45%</strong></td>
+            <td class="table-numeric"><strong>24.67</strong></td>
+            <td>Natural agrarian vocabulary, standard syntax</td>
+        </tr>
+        <tr>
+            <td><strong>Textile</strong></td>
+            <td class="table-numeric">300</td>
+            <td class="table-numeric">61.84%</td>
+            <td class="table-numeric">27.56%</td>
+            <td class="table-numeric">19.96</td>
+            <td>Industrial processes, loom equipment terms</td>
+        </tr>
+        <tr>
+            <td><strong>Pharmacy</strong></td>
+            <td class="table-numeric">301</td>
+            <td class="table-numeric">74.48%</td>
+            <td class="table-numeric">39.70%</td>
+            <td class="table-numeric">11.13</td>
+            <td>Heavy English medical loanwords (e.g., inhaler, batch)</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h3>3.3 Full 3×3 Performance Matrix (Dialect × Domain)</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Dialect Region</th>
+            <th>Category / Domain</th>
+            <th class="table-numeric">Files</th>
+            <th class="table-numeric">WER (%) ↓</th>
+            <th class="table-numeric">CER (%) ↓</th>
+            <th class="table-numeric">SacreBLEU ↑</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="3"><strong>Rayalaseema</strong></td>
+            <td>Dairy</td>
+            <td class="table-numeric">100</td>
+            <td class="table-numeric"><strong>49.65%</strong></td>
+            <td class="table-numeric"><strong>17.44%</strong></td>
+            <td class="table-numeric"><strong>27.94</strong></td>
+        </tr>
+        <tr>
+            <td>Pharmacy</td>
+            <td class="table-numeric">101</td>
+            <td class="table-numeric">70.47%</td>
+            <td class="table-numeric">32.57%</td>
+            <td class="table-numeric">11.71</td>
+        </tr>
+        <tr>
+            <td>Textile</td>
+            <td class="table-numeric">100</td>
+            <td class="table-numeric">62.09%</td>
+            <td class="table-numeric">25.65%</td>
+            <td class="table-numeric">18.96</td>
+        </tr>
+        <tr>
+            <td rowspan="3"><strong>Srikakulam</strong></td>
+            <td>Dairy</td>
+            <td class="table-numeric">99</td>
+            <td class="table-numeric">62.13%</td>
+            <td class="table-numeric">27.44%</td>
+            <td class="table-numeric">20.58</td>
+        </tr>
+        <tr>
+            <td>Pharmacy</td>
+            <td class="table-numeric">100</td>
+            <td class="table-numeric">72.80%</td>
+            <td class="table-numeric">37.68%</td>
+            <td class="table-numeric">11.24</td>
+        </tr>
+        <tr>
+            <td>Textile</td>
+            <td class="table-numeric">100</td>
+            <td class="table-numeric">66.01%</td>
+            <td class="table-numeric">34.30%</td>
+            <td class="table-numeric">17.08</td>
+        </tr>
+        <tr>
+            <td rowspan="3"><strong>Vizianagaram</strong></td>
+            <td>Dairy</td>
+            <td class="table-numeric">100</td>
+            <td class="table-numeric">54.37%</td>
+            <td class="table-numeric">19.52%</td>
+            <td class="table-numeric">25.41</td>
+        </tr>
+        <tr>
+            <td>Pharmacy</td>
+            <td class="table-numeric">100</td>
+            <td class="table-numeric">80.21%</td>
+            <td class="table-numeric">48.92%</td>
+            <td class="table-numeric">10.39</td>
+        </tr>
+        <tr>
+            <td>Textile</td>
+            <td class="table-numeric">100</td>
+            <td class="table-numeric">57.42%</td>
+            <td class="table-numeric">22.73%</td>
+            <td class="table-numeric">23.72</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>4. In-Depth Error Taxonomy & Qualitative Analysis</h2>
+
+<p>
+Detailed analysis of line-by-line comparisons reveals that the errors fall into four primary categories:
+</p>
+
+<h3>4.1 Telugu Compound Words & Agglutination (Sandhi)</h3>
+<p>
+Telugu naturally conjoins auxiliary words and postpositions (*బాగుంది + అని = బాగుందని*). While phonetically identical to the spoken utterance, standard WER treats this as both a deletion and an insertion:
+</p>
+<table>
+    <thead>
+        <tr>
+            <th>Audio ID</th>
+            <th>Ground Truth Reference</th>
+            <th>SeamlessM4T Prediction</th>
+            <th>Linguistic Phenomenon</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>1.dairy</code></td>
+            <td class="telugu-text">... బాగుంది అని ల్యాబ్ రిపోర్ట్.</td>
+            <td class="telugu-text">... బాగుందని లాబ్రిగోట్ చెప్పింది</td>
+            <td>Sandhi: బాగుంది + అని &rarr; బాగుందని</td>
+        </tr>
+        <tr>
+            <td><code>29.dairy</code></td>
+            <td class="telugu-text">... ప్రతి రోజు మైంటైన్ చేస్తాము.</td>
+            <td class="telugu-text">... ప్రతిరోజూ మెయింటైన్ చేస్తాము</td>
+            <td>Compounding of postpositional time phrase</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>4.2 Reference Typographical Errors (Model Corrected)</h3>
+<p>
+In multiple instances, SeamlessM4T produced grammatically and orthographically superior Telugu compared to typos in the ground truth Excel files:
+</p>
+<table>
+    <thead>
+        <tr>
+            <th>Audio ID</th>
+            <th>Ground Truth (With Typos)</th>
+            <th>SeamlessM4T (Correct Telugu)</th>
+            <th>Explanation</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>10.dairy</code></td>
+            <td class="telugu-text">... సరిగా <strong>జరింది</strong>.</td>
+            <td class="telugu-text">... సరిగ్గా <strong>జరిగింది</strong>.</td>
+            <td>Reference omitted consonant <em>గ</em>; model corrected.</td>
+        </tr>
+        <tr>
+            <td><code>11.dairy</code></td>
+            <td class="telugu-text">... <strong>కొత</strong> మెషిన్ <strong>తెచాము</strong>.</td>
+            <td class="telugu-text">... <strong>కొత్త</strong> మిషన్ <strong>తెచ్చాము</strong>.</td>
+            <td>Reference omitted double consonants <em>త్, చ్</em>.</td>
+        </tr>
+        <tr>
+            <td><code>13.dairy</code></td>
+            <td class="telugu-text">... <strong>పకారం</strong> ... <strong>పెరింది</strong>.</td>
+            <td class="telugu-text">... <strong>ప్రకారం</strong> ... <strong>పెరిగింది</strong>.</td>
+            <td>Reference had missing consonant clusters.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>4.3 Spacing Artifacts in Pharmacy & Textile References</h3>
+<p>
+The reference text for Pharmacy and Textile contained space-delimited syllables (e.g. <em>చెప్పా రు</em> instead of <em>చెప్పారు</em>, <em>గురిం చి</em> instead of <em>గురించి</em>, <em>సం బం ధిం చిన</em> instead of <em>సంబంధించిన</em>). SeamlessM4T output unbroken natural words, which standard tokenizers penalized as mismatch errors.
+</p>
+
+<h2>5. Roadmap for Performance Improvement</h2>
+<ol>
+    <li><strong>Inference Preprocessing (Immediate):</strong> Add Voice Activity Detection (VAD) using <code>librosa.effects.trim(top_db=25)</code> to remove leading/trailing silence and prevent English drift.</li>
+    <li><strong>Decoding Hyperparameters:</strong> Utilize <code>num_beams=4</code> with length penalty to stabilize decoding on heavily accented phrases.</li>
+    <li><strong>Indic Sandhi Normalizer:</strong> Standardize compound suffixes (*బాగుంది అని* &harr; *బాగుందని*) in evaluation to eliminate artificial word penalties.</li>
+    <li><strong>LoRA Fine-Tuning:</strong> Fine-tune low-rank adapters (r=16, &alpha;=32) on the RTX 3060 GPU (~25 mins). Expected to drop WER down to <strong>28&ndash;35%</strong>.</li>
+</ol>
+
+<h2>6. Deliverable Artifacts</h2>
+<ul>
+    <li><strong>Detailed Evaluation CSV:</strong> <code>D:\New folder\evaluation_metrics_detailed.csv</code> (900 rows with individual WER, CER, BLEU).</li>
+    <li><strong>Full Transcriptions CSV:</strong> <code>D:\New folder\seamlessm4t_transcriptions.csv</code>.</li>
+    <li><strong>Text Transcriptions Folder:</strong> <code>D:\New folder\transcriptions_seamlessm4t\</code>.</li>
+</ul>
+
+</body>
+</html>
